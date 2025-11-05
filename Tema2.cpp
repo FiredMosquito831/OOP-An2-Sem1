@@ -39,9 +39,8 @@ public:
 		setName("Alex");
 		setSpecialty(this->docSpecialty);
 		// setNoOfPatients(0); MODIFIABLE ONLY IN SET PATIENT HISTORY
-		setAge(this->age);
 		setPatientHistory(NULL, this->noPatients);
-		setSpecialty(this->docSpecialty);
+
 		
 	}
 
@@ -120,7 +119,7 @@ public:
 				else {
 					
 					// recommneded to use throw statements to block and prevent unexpected behavior
-					throw "For name #", i + 1, " you have entered a wrong length (above 25) or one of your name contains 0 chars.";
+					throw "You have entered a name of wrong length (above 25) or one of your name contains 0 chars.";
 					// DEFAULT FALLBACK 
 					//cout << "For name #" << i + 1 << " you have entered a wrong length (above 25)." << endl;
 					//this->patientHistory[i] = new char [11];
@@ -137,13 +136,35 @@ public:
 	unsigned int getAge() const{
 		return this->age;
 	}
+	
 	char* getName() const {
-		return this->name;
+	
+		// return this->name; WRONG we must return a copy
+		
+		// no idea why i get a weird error for my custom function int length = getCharVectLength(this->name); 
+		// ERROR
+		// Severity	Code	Description	Project	File	Line	Suppression State	Details
+		// Error(active)	E1086	the object has type qualifiers that are not compatible with the member function "PetDoctor::getCharVectLength"	Tema2	C : \Users\fgghk\PycharmProjects\POO An2 sem1\Tema2\Tema2.cpp	145
+
+		// now we return a copy which must be managed in main
+		char* tempCopy = new char[strlen(this -> name) + 1] {'\0'}; // what if we make it a static so it doesn't keep getting reinitialized?
+		strcpy_s(tempCopy, strlen(this->name) + 1, this->name);
+
+		return tempCopy;
 	}
 
 	char** getPatientHistory() const {
 
-		return this->patientHistory;
+		// return this->patientHistory; // wrong we must return a copy
+		
+		char** tempCopy = new char* [this->noPatients];
+		
+		for (int i = 0; i < this -> noPatients; i ++) {
+			tempCopy[i] = new char[strlen(this->patientHistory[i]) + 1] {'\0'};
+			strcpy_s(tempCopy[i], strlen(this->patientHistory[i]) + 1, this->patientHistory[i]);
+		}
+		// it is up to the user to handle memory management
+		return tempCopy;
 	}
 
 	int getNoOfPatients() const {
@@ -199,7 +220,7 @@ public:
 
 		bool equal = false;
 		bool equal_digits = true;
-		for (int i = 0; i < getNoOfPatients() && equal == false; i ++) {
+		for (int i = 0; i < this -> noPatients && equal == false; i ++) {
 			
 			if (getCharVectLength(patientNameCheck) == getCharVectLength(this->patientHistory[i])) {
 				equal_digits = true;
@@ -227,11 +248,11 @@ public:
 	void printDoctor() const {
 
 		// print name, age, specialty, noPatients and PatientHistory 
-		char* namePrint = getName(); // point to the same place where this -> name does so we must make sure not to modify it, which we do not since we just print (it is a shallow copy used only for printing, it is correct here to use over a deep copy so i shouldn't lose points)
-		int agePrint = getAge();
-		Specialty specialtyPrint = getSpecialty();
-		int noPatientsPrint = getNoOfPatients();
-		char** partientHistoryPrint = getPatientHistory(); // point to the same place where this -> patientHistory does so we must make sure not to modify it, which we do not since we just print (it is a shallow copy used only for printing, it is correct here to use over a deep copy so i shouldn't lose points)
+		char* namePrint = this -> name; // point to the same place where this -> name does so we must make sure not to modify it, which we do not since we just print (it is a shallow copy used only for printing, it is correct here to use over a deep copy so i shouldn't lose points)
+		int agePrint = this -> age;
+		Specialty specialtyPrint = this ->docSpecialty;
+		int noPatientsPrint = this->noPatients;
+		char** partientHistoryPrint = this-> patientHistory; // point to the same place where this -> patientHistory does so we must make sure not to modify it, which we do not since we just print (it is a shallow copy used only for printing, it is correct here to use over a deep copy so i shouldn't lose points)
 		
 		string specialtyString;
 		switch (specialtyPrint) {
@@ -260,10 +281,10 @@ public:
 		cout << endl << "Doctor name: " << namePrint << "; Age: " << agePrint << "; Specialty: " << specialtyString << "; Number of pacients: " << noPatientsPrint << ";\n";
 		if (noPatientsPrint != 0) {
 			cout << "Patient history: ";
-			for (int i = 0; i < getNoOfPatients(); i++) {
+			for (int i = 0; i < this -> noPatients; i++) {
 				cout << partientHistoryPrint[i];
 
-				if (i == getNoOfPatients() - 1) {
+				if (i == this -> noPatients - 1) {
 					cout << ";\n";
 				}
 				else {
@@ -273,6 +294,7 @@ public:
 			
 		}
 
+		
 		// set the temp shallow copies to nullptr (which is correct and the only correct place where shallow copies should be used, i.e. printing and showing data temporarely, not modifying or storing indefinetely, imo)
 		namePrint = nullptr;
 		partientHistoryPrint = nullptr;
@@ -387,18 +409,35 @@ int main() {
 	// those are very specific cases which i tested and made with throw exception to show the mistake and where it is could also use try catch except blocks but it was simplest to do it with throw (if we suppose that we do not work with cmd directly but someone works with our class, otherwise we need to do try catch except for console users to display an error and allow attempts until input si correct)
 	test2.setPatientHistory(testSetPacientHistory, numPacientsHistoryTest);
 	test2.printDoctor(); // all getters were tested within printDoctorsince they are called in printDoctor so they work perfectly, no need to test them here but i can
-	cout << "\nTesting getters:\n" << test2.getName() << " " << test2.getAge() << " " << test2.getSpecialty() << " " << test2.getNoOfPatients() << " " << test2.getPatientHistory() << endl;
 
+	for (int i = 0; i < numPacientsHistoryTest; i++) {
+		delete [] testSetPacientHistory[i];
+	}
+	delete[] testSetPacientHistory;
+	testSetPacientHistory = nullptr;
+
+
+	char* name = test2.getName();
+	char** patient_history = test2.getPatientHistory();
+	cout << "\nTesting getters:\n" << name << " " << test2.getAge() << " " << test2.getSpecialty() << " " << test2.getNoOfPatients() << " " << patient_history << endl;
+
+	
+	delete[]name;
+	for (int i = 0; i < test2.getNoOfPatients(); i++) {
+		delete[] patient_history[i];
+	}
+
+	delete[] patient_history;
+	patient_history = nullptr;
 
 	// no longer needed due to added deconstructor
 	// test.freeMemAll();
 	// test2.freeMemAll();
 	
-
 	return 0;
 }
 
 // This time i decided to follow and check instructions thoroughly to not lose points or do something or miss something 
 // and not take it as implicit everything is tested and works perfectly and as it should and the test code is in main
 // also can we get more homeworks (like 1 per seminar for what we studied at the seminar each seminar?
-// also only made 2 shallow copies for printing which is correct because it was not used to store data indefinetely or modify data (only temporary copy of the referenced memory for printing)
+// also only made 2 shallow copies for printing which is correct because it was not used to store data indefinetely or modify data (only temporary copy of the referenced memory for printing) also respect encapsulation
