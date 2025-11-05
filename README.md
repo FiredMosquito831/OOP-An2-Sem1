@@ -433,4 +433,4 @@ From your code, the guiding design principles are:
 
 ---
 
-Would you like me to add a **visual flow diagram** (like: *allocate → validate → assign → print → free*) showing memory handling and data safety flow for one variable (e.g., `name`)? It would make a great quick-reference visual summary.
+
