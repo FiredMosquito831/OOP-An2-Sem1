@@ -1,3 +1,109 @@
+
+Okay, let's analyze your `Playlist` class code and provide a summary based on the concepts we've discussed.
+
+**Playlist Class Analysis**
+
+1.  **Object:** Represents a music playlist.
+
+2.  **Attributes:**
+    *   `playlistName`: String, name of the playlist.
+    *   `noSongs`: Int, number of songs in the playlist.
+    *   `songDurations`: `int*`, dynamically allocated array of song durations (in seconds).
+    *   `maxPlaylistDuration`: Int, maximum allowed duration of the playlist (in seconds).
+
+3.  **Behaviors:**
+    *   Setters: `setMaxPlaylistDuration()`, `setPlaylistName()`, `setNumberOfSongs()`, `setSongDurations()`.
+    *   Getters: `getMaxPlaylistDuration()`.
+    *   `displayPlaylist()`: Prints playlist information.
+    *   `getDurationsSum()`: Calculates the total duration of all songs.
+    *   `normalizeSongDurations()`: Reduces song durations until total duration <= `maxPlaylistDuration`.
+    *   `addNewSongDuration()`: Adds a new song duration if it doesn't exceed the maximum duration.
+
+4.  **Access Modifiers:**
+    *   All data members are `private`.
+    *   All behaviors (except the destructor) are `public`.
+
+5.  **Constructors:**
+    *   Default constructor: `Playlist()`.
+    *   Parameterized constructors:
+        *   `Playlist(string playlistName, int maxPlaylistDurationNew)`.
+        *   `Playlist(string playlistName, int maxPlaylistDurationNew, int noSongs, int* durations)`.
+
+6.  **Destructor:** `~Playlist()`
+    *   `delete[] this->songDurations;`  Releases the memory allocated for the `songDurations` array.
+    *   Sets `songDurations = nullptr;` to prevent dangling pointers.
+
+7.  **`this->` Usage:**
+    *   Used consistently in setter methods to distinguish between the member variable (e.g., `this->maxPlaylistDuration`) and the parameter (e.g., `maxDuration`).
+
+**Class Skeleton (Reflecting Your Code Structure)**
+
+```c++
+#include <iostream> // For cout
+#include <string>   // For std::string
+
+class Playlist {
+private:
+
+// GIVE DEFAULT VALUES FOR ALL ATTRIBUTES
+    string playlistName = "Dance"; 
+    int noSongs = 0;
+    int* songDurations = nullptr; // Dynamically allocated array
+    int maxPlaylistDuration = 0;
+
+public:
+    // Constructors
+    Playlist();                                                            // Default
+    Playlist(const string playlistName, const int maxPlaylistDuration);     // Parameterized
+    Playlist(const string playlistName, const int maxPlaylistDuration, const int noSongs, int* const durations);
+
+    // Destructor YOU WILL USE IT TO FREE/DELETE THE DYNAMICALLY ALLOCATED MEMORY FOR POITNER ARRAYS AND SET THE POINTER to nullptr
+    ~Playlist();
+
+    // Setters (Mutators) - const to prevent modification to parameters
+    void setMaxPlaylistDuration(const int maxDuration);
+    void setPlaylistName(const string newName);
+    void setNumberOfSongs(const int noSongs);
+    void setSongDurations(int* const durations, const int noSongs); //Pass durations by pointer AND CREATE DEEP COPIES FOR ALL POINTER ARRAYS IN MEMORY (separte memory with reallocation of the private variable)
+
+    // Getters (Accessors) - const because they don't modify member data  (vor pointer arrays always return a copy)
+    int getMaxPlaylistDuration() const; //const after argument paranthesis indicates const method
+
+    // Other Behaviors (Operations)
+    void displayPlaylist();
+    float getDurationsSum();
+    void normalizeSongDurations();
+    void addNewSongDuration(const int newDuration);
+};
+```
+
+**Key Observations & Potential Improvements (Beyond the Scope of the Request, but worth noting):**
+
+*   **Resource Management:** The class correctly uses a destructor to free memory.
+*   **Error Handling:** The setters use `throw` to signal errors (exceptions). This is a good practice.
+*   **Clarity:** The code is generally readable.
+*   **Default Value:** Consider removing the default value "Heil Hitler" from `playlistName`. This can be an unintentional and offensive default.
+*   **Copy Constructor and Assignment Operator (Rule of Five):** Because the class manages dynamic memory (`songDurations`), it's important to consider the Rule of Five. You should implement (or explicitly delete) the copy constructor, copy assignment operator, move constructor, and move assignment operator to prevent issues with copying or assigning `Playlist` objects. If not handled, memory can be leaked or shared incorrectly. Using `std::vector` instead of raw pointers to manage dynamically allocated arrays would handle this more safely.
+*   **Input Validation:** The `setSongDurations` function can leak memory if `new int[this->noSongs]` throws an exception. It's safer to allocate the new array, copy, then delete the old. This applies the strong exception guarantee.
+
+This analysis gives you a clearer understanding of your `Playlist` class in the context of the class-creation guidelines.
+
+
+
+
+
+
+
+
+
+#
+#
+#
+#
+#
+#
+#
+# NEW SECTION:
 # This is based on the file [tema2.cpp](https://github.com/FiredMosquito831/OOP-An2-Sem1/blob/master/Tema2.cpp)
 
 ---
