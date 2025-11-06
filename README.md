@@ -53,27 +53,53 @@ private:
 
 public:
     // Constructors
-    Playlist();                                                            // Default
-    Playlist(const string playlistName, const int maxPlaylistDuration);     // Parameterized
-    Playlist(const string playlistName, const int maxPlaylistDuration, const int noSongs, int* const durations);
+    Playlist() {   // Default
+   // generally no code or no values set unless mentioned
+}
+      // Parameterized                                                      
+    Playlist(const string playlistName, const int maxPlaylistDuration) {
+
+   // have or create safe setters fo prarameters and call them here
+}     
+    Playlist(const string playlistName, const int maxPlaylistDuration, const int noSongs, int* const durations) {
+  // have or create safe setters and call them here
+}
 
     // Destructor YOU WILL USE IT TO FREE/DELETE THE DYNAMICALLY ALLOCATED MEMORY FOR POITNER ARRAYS AND SET THE POINTER to nullptr
     ~Playlist();
 
     // Setters (Mutators) - const to prevent modification to parameters
-    void setMaxPlaylistDuration(const int maxDuration);
-    void setPlaylistName(const string newName);
-    void setNumberOfSongs(const int noSongs);
-    void setSongDurations(int* const durations, const int noSongs); //Pass durations by pointer AND CREATE DEEP COPIES FOR ALL POINTER ARRAYS IN MEMORY (separte memory with reallocation of the private variable)
-
+    void setMaxPlaylistDuration(const int maxDuration) {
+      // setter code (with conditions)
+      }
+    void setPlaylistName(const string newName) {
+      // setter code (with conditions)
+}
+    void setNumberOfSongs(const int noSongs) {
+      // setter code (with conditions)
+}
+    void setSongDurations(int* const durations, const int noSongs) { //Pass durations by pointer AND CREATE DEEP COPIES FOR ALL POINTER ARRAYS IN MEMORY (separte memory with reallocation of the private variable)
+      // setter code (with conditions)
+}
     // Getters (Accessors) - const because they don't modify member data  (vor pointer arrays always return a copy)
-    int getMaxPlaylistDuration() const; //const after argument paranthesis indicates const method
+    int getMaxPlaylistDuration() const { //const after argument paranthesis indicates const method
 
+for non pointer array data you just sreturn the private attribute
+   return this->maxPlaylistDuration;
+} 
     // Other Behaviors (Operations)
-    void displayPlaylist();
-    float getDurationsSum();
-    void normalizeSongDurations();
-    void addNewSongDuration(const int newDuration);
+    void displayPlaylist() {
+   // code for displaying all attributes
+}
+    float getDurationsSum() {
+   // custom function for my example
+}
+    void normalizeSongDurations() {
+  // custom function
+}
+    void addNewSongDuration(const int newDuration) {
+   // custom function for creating a temp copy with an extra spot then reallocating original memory to private attribute with an extra spot and copying the temp copy that contains the extra added element
+}
 };
 ```
 
